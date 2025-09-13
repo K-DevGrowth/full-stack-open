@@ -1,3 +1,5 @@
+import personService from "../services/personService";
+
 const PersonForm = ({
   newName,
   setNewName,
@@ -8,18 +10,43 @@ const PersonForm = ({
 }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
-    const isExits = persons.some((person) => person.name === newName);
-    if (isExits) {
-      alert(`${newName} is already added to phonebook`);
-      return;
-    }
+    const existingPerson = persons.find((person) => person.name === newName);
 
-    setPersons([
-      ...persons,
-      { name: newName, number: newNumber, id: persons.length + 1 },
-    ]);
-    setNewName("");
-    setNewNumber("");
+    if (existingPerson) {
+      if (existingPerson.number !== newNumber) {
+        if (
+          !window.confirm(
+            `${existingPerson.name} is already added to phonebook, replace the old number with a new one?`
+          )
+        )
+          return;
+        personService
+          .update(existingPerson.id, {
+            ...existingPerson,
+            number: newNumber,
+          })
+          .then((returnedValue) => {
+            setPersons(
+              persons.map((person) =>
+                person.id === existingPerson.id ? returnedValue : person
+              )
+            );
+            setNewName("");
+            setNewNumber("");
+          });
+      } else {
+        alert(`${newName} is already added to phonebook`);
+        return;
+      }
+    } else {
+      personService
+        .create({ name: newName, number: newNumber })
+        .then((returnedValue) => {
+          setPersons([...persons, returnedValue]);
+          setNewName("");
+          setNewNumber("");
+        });
+    }
   };
 
   return (
@@ -44,7 +71,11 @@ const PersonForm = ({
           />
         </div>
         <div>
-          <button type="submit" onClick={handleSubmit} disabled={newName === ''}>
+          <button
+            type="submit"
+            onClick={handleSubmit}
+            disabled={newName === ""}
+          >
             Add
           </button>
         </div>
