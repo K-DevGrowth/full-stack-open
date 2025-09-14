@@ -7,6 +7,8 @@ const PersonForm = ({
   setNewNumber,
   persons,
   setPersons,
+  setMessage,
+  setMessageType,
 }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -20,6 +22,7 @@ const PersonForm = ({
           )
         )
           return;
+        setMessage(`Changed number of ${newName}`);
         personService
           .update(existingPerson.id, {
             ...existingPerson,
@@ -33,12 +36,22 @@ const PersonForm = ({
             );
             setNewName("");
             setNewNumber("");
+          })
+          .catch((error) => {
+            setMessage(
+              `Information of ${existingPerson.name} has already been removed from server`
+            );
+            setMessageType("error");
+            setTimeout(() => {
+              setMessage(null);
+            }, 5000);
           });
       } else {
         alert(`${newName} is already added to phonebook`);
         return;
       }
     } else {
+      setMessage(`Added ${newName}`);
       personService
         .create({ name: newName, number: newNumber })
         .then((returnedValue) => {

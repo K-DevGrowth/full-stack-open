@@ -1,6 +1,6 @@
 import personService from "../services/personService";
 
-const Persons = ({ newSearch, persons, setPersons }) => {
+const Persons = ({ newSearch, persons, setPersons, setMessage }) => {
   const newPersons = persons.filter((person) =>
     person.name.toLowerCase().includes(newSearch.toLowerCase())
   );
@@ -8,10 +8,11 @@ const Persons = ({ newSearch, persons, setPersons }) => {
   const handleDelete = (id) => {
     if (
       !window.confirm(
-        `Delete ${persons.find((person) => person.id === id).name} ?`
+        `Delete ${persons.find((person) => person.id === id).name}`
       )
     )
       return;
+    setMessage(`Deleted ${persons.find((person) => person.id === id).name}`);
     personService.remove(id).then(() => {
       setPersons(persons.filter((person) => person.id !== id));
     });
