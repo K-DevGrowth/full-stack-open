@@ -1,16 +1,23 @@
 import { useEffect, useState } from "react";
 import SearchBar from "./components/SearchBar";
 import countriesService from "./services/countries";
+import Country from "./components/Country";
 
 const App = () => {
   const [countries, setCountries] = useState([]);
   const [query, setQuery] = useState("");
+  const [showCountry, setShowCountry] = useState(null);
 
   useEffect(() => {
     countriesService.getAll().then((returnedValue) => {
       setCountries(returnedValue);
     });
   }, []);
+
+  const handleShowCountry = (country) => {
+    console.log(country);
+    setShowCountry(country);
+  };
 
   const filtered = countries.filter((country) =>
     country.name.common.toLowerCase().includes(query.toLowerCase())
@@ -25,23 +32,15 @@ const App = () => {
       {filtered.length > 1 &&
         filtered.length <= 10 &&
         filtered.map((country) => (
-          <p key={country.name.common}>{country.name.common}</p>
+          <div key={country.name.common}>
+            <span>{country.name.common}</span>
+            <button onClick={() => handleShowCountry(country)}>Show</button>
+          </div>
         ))}
 
-      {filtered.length === 1 && (
-        <div>
-          <h1>{filtered[0].name.common}</h1>
-          <p>catital {filtered[0].capital[0]}</p>
-          <p>area {filtered[0].area}</p>
-          <h2>Languages</h2>
-          <ul>
-            {Object.values(filtered[0].languages).map((lang) => (
-              <li key={lang}>{lang}</li>
-            ))}
-          </ul>
-          <img src={`${filtered[0].flags.png}`} alt={`Flag of ${filtered[0].name.common}`} />
-        </div>
-      )}
+      {filtered.length === 1 && <Country showCountry={filtered[0]} />}
+
+      {showCountry && <Country showCountry={showCountry} />}
     </div>
   );
 };
