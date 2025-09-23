@@ -1,0 +1,17 @@
+{
+  "name": "phonebookbackend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Khoi",
+  "license": "ISC",
+  "description": "Phone book backend",
+  "dependencies": {
+    "express": "^5.1.0",
+    "morgan": "^1.10.1"
+  }
+}
