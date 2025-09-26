@@ -1,5 +1,6 @@
 const express = require("express")
 const morgan = require("morgan")
+const path = require("path")
 
 const app = express()
 
@@ -31,6 +32,7 @@ morgan.token('body', (req, res) => {
 })
 
 app.use(express.json())
+app.use(express.static(path.join(__dirname, '../phonebook-frontend/dist')))
 app.use(morgan(":method :url :status :res[content-length] - :response-time ms :body "))
 
 app.get('/', (req, res) => {
@@ -82,7 +84,7 @@ app.post('/api/persons', (req, res) => {
             error: "content missing"
         });
     }
-    
+
     if (persons.find(person => person.name === body.name)) {
         return res.status(409).json({
             error: "name must be unique"
@@ -100,6 +102,6 @@ app.post('/api/persons', (req, res) => {
     res.json(person)
 })
 
-const port = 3001
+const port = process.env.PORT || 3001
 app.listen(port)
 console.log(`Server running on port ${port}`)
