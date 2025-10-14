@@ -22,13 +22,15 @@ const PersonForm = ({
           )
         )
           return;
-        setMessage(`Changed number of ${newName}`);
+
         personService
           .update(existingPerson.id, {
             ...existingPerson,
             number: newNumber,
           })
           .then((returnedValue) => {
+            setMessage(`Changed number of ${newName}`);
+            setMessageType("success");
             setPersons(
               persons.map((person) =>
                 person.id === existingPerson.id ? returnedValue : person
@@ -51,13 +53,21 @@ const PersonForm = ({
         return;
       }
     } else {
-      setMessage(`Added ${newName}`);
       personService
         .create({ name: newName, number: newNumber })
         .then((returnedValue) => {
+          setMessage(`Added ${newName}`);
+          setMessageType("success");
           setPersons([...persons, returnedValue]);
           setNewName("");
           setNewNumber("");
+        })
+        .catch((error) => {
+          setMessageType("error");
+          setMessage(error.response.data.error);
+          setTimeout(() => {
+            setMessage(null);
+          }, 5000);
         });
     }
   };
