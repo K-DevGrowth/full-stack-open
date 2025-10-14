@@ -38,7 +38,9 @@ else if (process.argv.length === 5) {
         console.log(`added ${newName} number ${newNumber} to phonebook`)
         mongoose.connection.close()
     })
-} else {
+} 
+
+else {
     console.log('Invalid number of arguments!')
     mongoose.connection.close()
 }
