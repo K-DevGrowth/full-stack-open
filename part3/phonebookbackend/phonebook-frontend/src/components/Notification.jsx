@@ -3,7 +3,7 @@ const Notification = ({ message, type }) => {
     return null;
   }
   return (
-    <div className={`notification ${type === "success" ? "" : "error"}`}>
+    <div className={`notification ${type === "success" ? "success" : "error"}`}>
       {message}
     </div>
   );
