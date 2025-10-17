@@ -1,7 +1,7 @@
-require("dotenv").config();
 const express = require("express");
 const Blog = require("./models/blog");
-
+const logger = require("./utils/logger");
+const config = require("./utils/config");
 const app = express();
 
 app.use(express.json());
@@ -20,7 +20,6 @@ app.post("/api/blogs", (request, response) => {
   });
 });
 
-const PORT = process.env.PORT;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.listen(config.PORT, () => {
+  logger.info(`Server running on port ${config.PORT}`);
 });
