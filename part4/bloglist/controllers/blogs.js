@@ -6,17 +6,22 @@ blogsRouter.get("/", async (req, res) => {
   res.json(blogs);
 });
 
-blogsRouter.get("/:id", async (req, res) => {
-  const blog = await Blog.findById(req.params.id);
-  res.json(blog);
-});
+blogsRouter.post("/", async (req, res) => {
+  const body = req.body;
 
-blogsRouter.post("/", (req, res) => {
-  const blog = new Blog(req.body);
+  if (!body.title || !body.url) {
+    return res.status(400).json({ error: "missing content" });
+  }
 
-  blog.save().then((result) => {
-    res.status(201).json(result);
+  const blog = new Blog({
+    title: body.title,
+    author: body.author,
+    url: body.url,
+    likes: body.likes,
   });
+
+  const savedBlog = await blog.save();
+  res.status(201).json(savedBlog);
 });
 
 module.exports = blogsRouter;
