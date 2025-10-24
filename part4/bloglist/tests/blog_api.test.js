@@ -1,5 +1,5 @@
 const assert = require("node:assert");
-const { test, after, beforeEach } = require("node:test");
+const { test, after, beforeEach, describe } = require("node:test");
 const mongoose = require("mongoose");
 const supertest = require("supertest");
 const helper = require("./test_helper");
@@ -86,7 +86,35 @@ test("the title or url properties are missing from the request data", async () =
   assert.strictEqual(blogsAtEnd.length, blogsAtStart.length);
 });
 
+test("deleting a blog with valid id", async () => {
+  const blogsAtStart = await helper.blogsInDB();
+  const deletedBlog = blogsAtStart[0];
 
+  await api.delete(`/api/blogs/${deletedBlog.id}`).expect(204);
+
+  const blogsAtEnd = await helper.blogsInDB();
+
+  assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1);
+});
+
+test("update a blog succeeds with a valid id", async () => {
+  const newBlog = {
+    title: "Willchangelater",
+    author: "A",
+    url: "https://nothing.com",
+    likes: 1,
+  };
+  const blogsAtStart = await helper.blogsInDB();
+  const updatedBlog = blogsAtStart[0];
+
+  await api.put(`/api/blogs/${updatedBlog.id}`).send(newBlog).expect(200);
+
+  const blogsAtEnd = await helper.blogsInDB();
+  const contents = blogsAtEnd.map((blog) => blog.title);
+
+  assert.strictEqual(blogsAtStart.length, helper.initialBlogs.length);
+  assert(contents.includes("Willchangelater"));
+});
 
 after(async () => {
   await mongoose.connection.close();
