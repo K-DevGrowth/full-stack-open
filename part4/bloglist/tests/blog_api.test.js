@@ -5,7 +5,6 @@ const supertest = require("supertest");
 const helper = require("./test_helper");
 const app = require("../app");
 const Blog = require("../models/blog");
-const { url } = require("node:inspector");
 
 const api = supertest(app);
 
@@ -86,6 +85,8 @@ test("the title or url properties are missing from the request data", async () =
 
   assert.strictEqual(blogsAtEnd.length, blogsAtStart.length);
 });
+
+
 
 after(async () => {
   await mongoose.connection.close();

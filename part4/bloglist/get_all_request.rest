@@ -5,6 +5,23 @@ POST http://localhost:3001/api/blogs
 Content-Type: application/json
 
 {
-  "url": "https://",
-  "likes": 3
+  "title": "The Outliners",
+  "author": "Khoi",
+  "url": "https://kdev.com",
+  "likes": 6
+}
+
+###
+DELETE http://localhost:3001/api/blogs/68faf0bd20fb0084122fbcfe
+
+###
+
+PUT http://localhost:3001/api/blogs/68fbeac7d6751df67197afe5
+Content-Type: application/json
+
+{
+  "title": "The Outliners",
+  "author": "Khoi",
+  "url": "https://kdev.com",
+  "likes": 28
 }
