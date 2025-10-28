@@ -102,10 +102,10 @@ describe("When there is initially some blogs saved", () => {
     });
   });
 
-  describe("updation of a blog", () => {
+  describe("updating of a blog", () => {
     test("succeeds with valid id", async () => {
       const newBlog = {
-        title: "Willchangelater",
+        title: "Will change later",
         author: "A",
         url: "https://nothing.com",
         likes: 1,
@@ -119,7 +119,7 @@ describe("When there is initially some blogs saved", () => {
       const contents = blogsAtEnd.map((blog) => blog.title);
 
       assert.strictEqual(blogsAtStart.length, helper.initialBlogs.length);
-      assert(contents.includes("Willchangelater"));
+      assert(contents.includes("Will change later"));
     });
   });
 });

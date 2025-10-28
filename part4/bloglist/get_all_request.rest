@@ -25,3 +25,16 @@ Content-Type: application/json
   "url": "https://kdev.com",
   "likes": 28
 }
+
+###
+GET http://localhost:3001/api/users
+
+###
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+  "username": "Sunhara",
+  "name": "Khoi",
+  "password": "slols"
+}
