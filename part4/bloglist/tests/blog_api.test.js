@@ -5,6 +5,8 @@ const supertest = require("supertest");
 const helper = require("./test_helper");
 const app = require("../app");
 const Blog = require("../models/blog");
+const bcrypt = require("bcrypt");
+const User = require("../models/user");
 
 const api = supertest(app);
 
@@ -121,6 +123,61 @@ describe("When there is initially some blogs saved", () => {
       assert.strictEqual(blogsAtStart.length, helper.initialBlogs.length);
       assert(contents.includes("Will change later"));
     });
+  });
+});
+
+describe("When there is initially one user in db", () => {
+  beforeEach(async () => {
+    await User.deleteMany({});
+
+    const passwordHash = await bcrypt.hash("secret", 10);
+
+    const user = new User({ username: "root", passwordHash });
+
+    await user.save();
+  });
+
+  test("creation succeeds with a fresh username", async () => {
+    const usersAtStart = await helper.usersInDB();
+
+    const newUser = {
+      username: "Kdev",
+      name: "Khoi",
+      password: "abcd",
+    };
+
+    await api
+      .post("/api/users")
+      .send(newUser)
+      .expect(201)
+      .expect("Content-Type", /application\/json/);
+
+    const usersAtEnd = await helper.usersInDB();
+    assert.strictEqual(usersAtEnd.length, usersAtStart.length + 1);
+
+    const usernames = usersAtEnd.map((u) => u.username);
+    assert(usernames.includes(newUser.username));
+  });
+
+  test("creation fails with a proper statuscode and message if username already taken", async () => {
+    const usersAtStart = await helper.usersInDB();
+
+    const newUser = {
+      username: "Kdev",
+      name: "Khoi",
+      password: "abcd",
+    };
+
+    const result = await api
+      .post("/api/users")
+      .send(newUser)
+      .expect(400)
+      .expect("Content-Type", /application\/json/);
+
+    const usersAtEnd = await helper.usersInDB();
+    assert(result.body.error.includes("expected `username` to be unique"));
+
+    assert.strictEqual(usersAtEnd.length, usersAtStart.length);
   });
 });
 
