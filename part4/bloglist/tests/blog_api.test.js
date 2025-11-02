@@ -10,8 +10,20 @@ const User = require("../models/user");
 
 const api = supertest(app);
 
+let token = "";
+
 describe("When there is initially some blogs saved", () => {
   beforeEach(async () => {
+    await User.deleteMany({});
+    const passwordHash = await bcrypt.hash("secret", 10);
+    const user = new User({ username: "root", passwordHash });
+    await user.save();
+
+    const res = await api
+      .post("/api/login")
+      .send({ username: "root", password: "secret" });
+
+    token = res.body.token;
     await Blog.deleteMany({});
     await Blog.insertMany(helper.initialBlogs);
   });
@@ -29,7 +41,7 @@ describe("When there is initially some blogs saved", () => {
   });
 
   describe("addition of a blog", () => {
-    test("succeeds with a valid data", async () => {
+    test("succeeds with a valid data and token", async () => {
       const newBlog = {
         title: "testing",
         author: "Khoi",
@@ -39,6 +51,7 @@ describe("When there is initially some blogs saved", () => {
 
       await api
         .post("/api/blogs")
+        .set("Authorization", `Bearer ${token}`)
         .send(newBlog)
         .expect(201)
         .expect("Content-Type", /application\/json/);
@@ -48,6 +61,19 @@ describe("When there is initially some blogs saved", () => {
 
       assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1);
       assert(contents.includes("testing"));
+    });
+
+    test("fails with 401 if token is not provided", async () => {
+      const newBlog = {
+        title: "No token blog",
+        author: "Someone",
+        url: "https://testing-no-token",
+        likes: 1,
+      };
+
+      await api.post("/api/login").expect(401).send(newBlog);
+      const blogsAtEnd = await helper.blogsInDB();
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length);
     });
 
     test("unique identifier property of blog posts is named id", async () => {
@@ -129,11 +155,8 @@ describe("When there is initially some blogs saved", () => {
 describe("When there is initially one user in db", () => {
   beforeEach(async () => {
     await User.deleteMany({});
-
     const passwordHash = await bcrypt.hash("secret", 10);
-
     const user = new User({ username: "root", passwordHash });
-
     await user.save();
   });
 
