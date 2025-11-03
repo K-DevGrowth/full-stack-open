@@ -3,6 +3,7 @@ import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import Notification from "./components/Notification";
+import BlogForm from "./components/BlogForm";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -12,10 +13,6 @@ const App = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
-
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
-  const [url, setUrl] = useState("");
 
   const handleLogout = () => {
     window.localStorage.removeItem("loggedBlogappUser");
@@ -70,62 +67,31 @@ const App = () => {
     );
   };
 
-  const handleAddBlog = async (e) => {
-    e.preventDefault();
-
+  const handleAddBlog = async (blogObject) => {
     try {
-      const newBlog = await blogService.create({ title, author, url });
+      const newBlog = await blogService.create(blogObject);
       setBlogs([...blogs, newBlog]);
-      setMessage(`a new blog ${title} by ${author} added`);
+
+      setMessage(
+        `a new blog ${blogObject.title} by ${blogObject.author} added`
+      );
       setMessageType("success");
-
-      setTitle("");
-      setAuthor("");
-      setUrl("");
+      setTimeout(() => {
+        setMessage(null);
+        setMessageType(null);
+      }, 5000);
     } catch {
-      setMessage("failed to add blog");
+      setMessage("Failed to add blog");
       setMessageType("error");
+      setTimeout(() => {
+        setMessage(null);
+        setMessageType(null);
+      }, 5000);
     }
-
-    setTimeout(() => {
-      setMessage(null);
-      setMessageType(null);
-    }, 5000);
   };
 
   const blogFrom = () => {
-    return (
-      <form onSubmit={handleAddBlog}>
-        <div>
-          <label htmlFor="title">title</label>
-          <input
-            type="text"
-            id="title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-        </div>
-        <div>
-          <label htmlFor="author">author</label>
-          <input
-            type="text"
-            id="author"
-            value={author}
-            onChange={(e) => setAuthor(e.target.value)}
-          />
-        </div>
-        <div>
-          <label htmlFor="url">url</label>
-          <input
-            type="text"
-            id="url"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-          />
-        </div>
-        <button type="submit">create</button>
-      </form>
-    );
+    return <BlogForm createBlog={handleAddBlog} />;
   };
 
   useEffect(() => {
