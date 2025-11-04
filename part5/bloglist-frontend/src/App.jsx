@@ -4,6 +4,7 @@ import blogService from "./services/blogs";
 import loginService from "./services/login";
 import Notification from "./components/Notification";
 import BlogForm from "./components/BlogForm";
+import Togglable from "./components/Togglable";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -19,6 +20,28 @@ const App = () => {
     setUser(null);
   };
 
+  const handleLikeChange = async (id, blogObject) => {
+    try {
+      const updateBlog = await blogService.update(id, blogObject);
+      setBlogs(blogs.map((blog) => (blog.id !== id ? blog : updateBlog)));
+      setMessage(
+        `a new blog ${blogObject.title} by ${blogObject.author} was liked`
+      );
+      setMessageType("success");
+      setTimeout(() => {
+        setMessage(null);
+        setMessageType(null);
+      }, 5000);
+    } catch {
+      setMessageType("Error");
+      setMessage("Failed to update the like amount of the blog");
+      setTimeout(() => {
+        setMessage(null);
+        setMessageType(null);
+      }, 5000);
+    }
+  };
+
   const hanldeLogin = async (e) => {
     e.preventDefault();
 
@@ -29,12 +52,48 @@ const App = () => {
       setUser(user);
       setUsername("");
       setPassword("");
+      setTimeout(() => {
+        setMessage(null);
+        setMessageType(null);
+      }, 5000);
     } catch {
       setMessage("wrong username or password");
       setMessageType("error");
       setTimeout(() => {
         setMessage(null);
+        setMessageType(null);
       }, 5000);
+    }
+  };
+
+  const handleAddBlog = async (blogObject) => {
+    try {
+      const newBlog = await blogService.create(blogObject);
+      setBlogs([...blogs, newBlog]);
+
+      setMessage(
+        `a new blog ${blogObject.title} by ${blogObject.author} added`
+      );
+      setMessageType("success");
+    } catch {
+      setMessage("Failed to add blog");
+      setMessageType("error");
+    }
+  };
+
+  const handleRemoveBlog = async (id) => {
+    try {
+      await blogService.remove(id);
+      setBlogs(blogs.filter((blog) => blog.id !== id));
+      setMessageType("success");
+      setMessage(
+        `a blog ${blogs.find((blog) => blog.id === id).title} by ${
+          blogs.find((blog) => blog.id === id).author
+        } was removed`
+      );
+    } catch {
+      setMessageType("error");
+      setMessage("Failed to remove blog");
     }
   };
 
@@ -67,35 +126,18 @@ const App = () => {
     );
   };
 
-  const handleAddBlog = async (blogObject) => {
-    try {
-      const newBlog = await blogService.create(blogObject);
-      setBlogs([...blogs, newBlog]);
-
-      setMessage(
-        `a new blog ${blogObject.title} by ${blogObject.author} added`
-      );
-      setMessageType("success");
-      setTimeout(() => {
-        setMessage(null);
-        setMessageType(null);
-      }, 5000);
-    } catch {
-      setMessage("Failed to add blog");
-      setMessageType("error");
-      setTimeout(() => {
-        setMessage(null);
-        setMessageType(null);
-      }, 5000);
-    }
-  };
-
-  const blogFrom = () => {
-    return <BlogForm createBlog={handleAddBlog} />;
-  };
+  const blogFrom = () => (
+    <Togglable buttonLabel="create new blog">
+      <BlogForm createBlog={handleAddBlog} />
+    </Togglable>
+  );
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
+    blogService
+      .getAll()
+      .then((blogs) =>
+        setBlogs(blogs.sort((blog1, blog2) => blog2.likes - blog1.likes))
+      );
     const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
@@ -126,7 +168,15 @@ const App = () => {
           {blogFrom()}
         </div>
       )}
-      {user && blogs.map((blog) => <Blog key={blog.id} blog={blog} />)}
+      {user &&
+        blogs.map((blog) => (
+          <Blog
+            key={blog.id}
+            blog={blog}
+            handleRemoveChange={handleRemoveBlog}
+            handleLikeChange={handleLikeChange}
+          />
+        ))}
     </div>
   );
 };

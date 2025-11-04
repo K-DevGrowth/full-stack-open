@@ -60,17 +60,28 @@ blogsRouter.delete("/:id", userExtractor, async (req, res) => {
 
 blogsRouter.put("/:id", userExtractor, async (req, res) => {
   const { title, author, url, likes } = req.body;
-  const blog = await Blog.findByIdAndUpdate(req.params.id);
+  const user = req.user;
 
-  if (blog) {
-    blog.title = title;
-    blog.author = author;
-    blog.url = url;
-    blog.likes = likes;
+  const blog = await Blog.findById(req.params.id);
+
+  if (!blog) {
+    return res.status(404).json({
+      error: "blog not found",
+    });
   }
 
-  const savedBlog = await blog.save();
-  res.status(200).json(savedBlog);
+  if (blog.user.toString() !== user._id.toString()) {
+    return res.status(403).json({
+      error: "only creater can update this blog",
+    });
+  }
+
+  const updatedblog = await Blog.findByIdAndUpdate(
+    req.params.id,
+    { title, author, url, likes },
+    { new: true, runValidators: true }
+  ).populate("user", { username: 1, name: 1 });
+  res.status(200).json(updatedblog);
 });
 
 module.exports = blogsRouter;
