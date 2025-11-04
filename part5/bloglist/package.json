@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "lint": "eslint .",
     "start": "cross-env NODE_ENV=production node index.js",
     "dev": "cross-env NODE_ENV=development node --watch index.js",
     "test": "cross-env NODE_ENV=test node --test"
@@ -19,6 +20,7 @@
     "mongoose": "^8.19.1"
   },
   "devDependencies": {
+    "globals": "^16.5.0",
     "supertest": "^7.1.4"
   }
 }
