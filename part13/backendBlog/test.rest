@@ -10,3 +10,6 @@ Content-Type: application/json
   "title": "okela",
   "likes": 6
 }
+
+###
+DELETE http://localhost:3001/api/blogs/3

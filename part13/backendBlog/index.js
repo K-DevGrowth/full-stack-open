@@ -65,6 +65,12 @@ app.post("/api/blogs", async (req, res) => {
   }
 });
 
+app.delete("/api/blogs/:id", async (req, res) => {
+  const blog = await Blog.findByPk(req.params.id);
+  await blog.destroy();
+  res.status(204).end();
+});
+
 const printBlog = async () => {
   const blogs = await Blog.findAll();
 
