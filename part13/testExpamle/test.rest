@@ -5,6 +5,9 @@ POST http://localhost:3001/api/notes
 Content-Type: application/json
 
 {
-  "content": "hello postgres",
+  "content": "focus time",
   "important": true
 }
+
+###
+GET http://localhost:3001/api/notes/1
