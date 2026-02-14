@@ -5,11 +5,19 @@ POST http://localhost:3001/api/blogs
 Content-Type: application/json
 
 {
-  "author": "Steve",
-  "url": "http://tiktok.com/",
-  "title": "hotdog",
-  "likes": 36
+  "author": "Zelda",
+  "url": "http://twitter.com/",
+  "title": "pomodoro",
+  "likes": 99
 }
 
 ###
 DELETE http://localhost:3001/api/blogs/5
+
+###
+PUT http://localhost:3001/api/blogs/6
+Content-Type: application/json
+
+{
+  "likes": 8
+}
