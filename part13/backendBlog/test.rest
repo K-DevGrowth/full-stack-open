@@ -21,3 +21,23 @@ Content-Type: application/json
 {
   "likes": 8
 }
+
+###
+GET http://localhost:3001/api/users
+
+###
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+  "username": "Kblog",
+  "name": "khoi"
+}
+
+###
+PUT http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+  "username": "K blog chanel",
+}
