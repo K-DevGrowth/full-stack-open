@@ -16,6 +16,7 @@ User.init(
       allowNull: false,
       validate: {
         notEmpty: true,
+        is: /[a-z0-9._%+-]+@[a-z0-9.-]+\.(com|vn|org)/gi,
       },
     },
     name: {

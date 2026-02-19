@@ -3,12 +3,13 @@ GET http://localhost:3001/api/blogs
 ###
 POST http://localhost:3001/api/blogs
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imtob2lkejA5MEBnbWFpbC5jb20iLCJpZCI6MiwiaWF0IjoxNzcxNDY4NzM3fQ.lMWvBjkasV908xe53JiLS3X7q61Jcu98W_4heXBH5uI
 
 {
-  "author": "Zelda",
+  "author": "Steve",
   "url": "http://twitter.com/",
-  "title": "pomodoro",
-  "likes": 99
+  "title": "hotdog",
+  "likes": 56
 }
 
 ###
@@ -30,7 +31,7 @@ POST http://localhost:3001/api/users
 Content-Type: application/json
 
 {
-  "username": "Kblog",
+  "username": "khoidz090@gmail.com",
   "name": "khoi"
 }
 
@@ -40,4 +41,13 @@ Content-Type: application/json
 
 {
   "username": "K blog chanel",
+}
+
+###
+POST http://localhost:3001/api/login
+Content-Type: application/json
+
+{
+  "username": "khoidz090@gmail.com",
+  "password": "secret"
 }
