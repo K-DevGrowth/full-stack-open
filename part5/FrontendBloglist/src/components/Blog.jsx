@@ -1,37 +1,37 @@
-import { useState } from "react";
+import { useState } from 'react'
 
 const Blog = ({ blog, handleLikeChange, handleRemoveChange }) => {
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(false)
 
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
-    border: "solid",
+    border: 'solid',
     borderWidth: 1,
     marginBottom: 5,
-  };
+  }
 
-  const label = show ? "hide" : "show";
+  const label = show ? 'hide' : 'show'
 
   const showDetailsBlog = () => {
-    setShow(!show);
-  };
+    setShow(!show)
+  }
 
   const handleLikeClick = () => {
     handleLikeChange(blog.id, {
       ...blog,
       likes: blog.likes + 1,
-    });
-  };
+    })
+  }
 
   const handleRemoveClick = () => {
-    if (!window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) return;
+    if (!window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) return
 
-    handleRemoveChange(blog.id);
-  };
+    handleRemoveChange(blog.id)
+  }
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className='blog'>
       {blog.title} {blog.author}
       <button onClick={showDetailsBlog}>{label}</button>
       {show && (
@@ -45,7 +45,7 @@ const Blog = ({ blog, handleLikeChange, handleRemoveChange }) => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default Blog;
+export default Blog
