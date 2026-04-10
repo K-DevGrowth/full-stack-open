@@ -13,11 +13,11 @@ const BlogForm = ({ createBlog }) => {
       url: url,
     })
 
-    setTitle('')
-    setAuthor('')
-    setUrl('')
-
-  }
+<<<<<<< HEAD:part5/FrontendBloglist/src/components/BlogForm.jsx
+    setTitle("");
+    setAuthor("");
+    setUrl("");
+  };
 
   return (
     <form onSubmit={handleAddBlog}>

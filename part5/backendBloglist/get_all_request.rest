@@ -14,19 +14,20 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlM3N
 }
 
 ###
-DELETE http://localhost:3001/api/blogs/69069b79f52f1357680234b1
+DELETE http://localhost:3001/api/blogs/6909bbcebd871706b173f934
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlM3NzduIiwiaWQiOiI2OTAxZmJiYzNkMjg1NjI1ZGMyNGE4YzYiLCJpYXQiOjE3NjIwMzk5Mzl9.pOrknrb8kVMyIceWUc0dRH4UlTzlKsjJqN65cHfD0UU
 
 ###
 
-PUT http://localhost:3001/api/blogs/68fbeac7d6751df67197afe5
+PUT http://localhost:3001/api/blogs/6909b0691a0d14a0d7c71cea
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlM3NzduIiwiaWQiOiI2OTAxZmJiYzNkMjg1NjI1ZGMyNGE4YzYiLCJpYXQiOjE3NjIyNDQ5Mzh9.vN8hBnxnpU0d4cJ_2ExL3RIrGxIBFeYmShB-3VTXFTw
 
 {
-  "title": "The Outliners",
+  "title": "The updated",
   "author": "Khoi",
   "url": "https://kdev.com",
-  "likes": 28
+  "likes": 1
 }
 
 ###
@@ -37,7 +38,7 @@ POST http://localhost:3001/api/users
 Content-Type: application/json
 
 {
-  "username": "kdev6",
+  "username": "khoidz",
   "name": "Khoi",
   "password": "123"
 }
