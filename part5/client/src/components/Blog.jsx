@@ -20,6 +20,7 @@ const Blog = ({ blog, handleLikeChange, handleRemoveChange }) => {
   const handleLikeClick = () => {
     handleLikeChange(blog.id, {
       ...blog,
+      user: blog.user.id,
       likes: blog.likes + 1,
     })
   }

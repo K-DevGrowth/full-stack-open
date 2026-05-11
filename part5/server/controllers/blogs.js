@@ -74,16 +74,20 @@ blogsRouter.put("/:id", userExtractor, async (req, res) => {
     });
   }
 
+  // Allow any authenticated user to update likes, but only creator can modify other fields
   if (blog.user.toString() !== user._id.toString()) {
-    return res.status(403).json({
-      error: "only creater can update this blog",
-    });
+    // If trying to update fields other than likes, reject
+    if (title !== undefined || author !== undefined || url !== undefined) {
+      return res.status(403).json({
+        error: "only creater can update this blog",
+      });
+    }
   }
 
   const updatedblog = await Blog.findByIdAndUpdate(
     req.params.id,
     { title, author, url, likes },
-    { new: true, runValidators: true }
+    { new: true, runValidators: true },
   ).populate("user", { username: 1, name: 1 });
   res.status(200).json(updatedblog);
 });

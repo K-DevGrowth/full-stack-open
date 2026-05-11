@@ -13,7 +13,6 @@ const BlogForm = ({ createBlog }) => {
       url: url,
     })
 
-<<<<<<< HEAD:part5/FrontendBloglist/src/components/BlogForm.jsx
     setTitle("");
     setAuthor("");
     setUrl("");

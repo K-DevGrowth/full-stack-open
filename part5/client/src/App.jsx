@@ -44,7 +44,7 @@ const App = () => {
     }
   }
 
-  const hanldeLogin = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault()
 
     try {
@@ -105,7 +105,7 @@ const App = () => {
     return (
       <div>
         <h2>log in to application</h2>
-        <form onSubmit={hanldeLogin}>
+        <form onSubmit={handleLogin}>
           <div>
             <label htmlFor="username">username</label>
             <input
