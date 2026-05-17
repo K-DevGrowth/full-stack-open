@@ -48,6 +48,6 @@ POST http://localhost:3001/api/login
 Content-Type: application/json
 
 {
-  "username": "S777n",
-  "password": "s3l"
+  "username": "kdev",
+  "password": "123"
 }
