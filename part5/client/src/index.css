@@ -14,3 +14,8 @@
   color: red;
   border-color: red;
 }
+
+.nav {
+  display: flex;
+  gap: 6px;
+}
