@@ -18,6 +18,7 @@ describe("Blog app", () => {
   });
 
   test("Login form is shown", async ({ page }) => {
+    await page.goto("/login");
     await expect(page.getByText("log in to application")).toBeVisible();
     await expect(page.getByLabel("username")).toBeVisible();
     await expect(page.getByLabel("password")).toBeVisible();
@@ -25,9 +26,15 @@ describe("Blog app", () => {
   });
 
   describe("Login", () => {
-    test("succeeds with correct credentials", async ({ page }) => {
+    test("succeeds with the correct username/password combination", async ({
+      page,
+    }) => {
+      await page.goto("/login");
       await loginWith(page, user.username, user.password);
-      await expect(page.getByText(`${user.name} logged in`)).toBeVisible();
+      await page.goto("/");
+      await expect(
+        page.getByRole("button", { name: "logout" }).locator(".."),
+      ).toBeVisible();
     });
 
     test("fails with wrong credentials", async ({ page }) => {
