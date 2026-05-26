@@ -36,11 +36,26 @@ const App = () => {
   }, []);
 
   const handleLogin = async ({ username, password }) => {
-    const user = await loginService.login({ username, password });
-    window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
-    blogService.setToken(user.token);
-    setUser(user);
-    navigate("/");
+    try {
+      const user = await loginService.login({ username, password });
+      window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
+      blogService.setToken(user.token);
+      setUser(user);
+      navigate("/");
+      setMessageType("success");
+      setMessage("logged in successfully");
+      setTimeout(() => {
+        setMessage(null);
+        setMessageType(null);
+      }, 5000);
+    } catch {
+      setMessageType("error");
+      setMessage("wrong username or password");
+      setTimeout(() => {
+        setMessage(null);
+        setMessageType(null);
+      }, 5000);
+    }
   };
 
   const handleLogout = () => {
@@ -67,7 +82,7 @@ const App = () => {
         setMessageType(null);
       }, 5000);
     } catch {
-      setMessageType("Error");
+      setMessageType("error");
       setMessage("Failed to update the like amount of the blog");
       setTimeout(() => {
         setMessage(null);
@@ -79,21 +94,40 @@ const App = () => {
   const handleAddBlog = async (blogObject) => {
     try {
       const newBlog = await blogService.create(blogObject);
+
+      const blogWithUser = {
+        ...newBlog,
+        user: newBlog.user || user,
+      };
+
       setBlogs(
-        [...blogs, newBlog].sort((blog1, blog2) => blog2.likes - blog1.likes),
+        [...blogs, blogWithUser].sort(
+          (blog1, blog2) => blog2.likes - blog1.likes,
+        ),
       );
-      navigate("/");
 
       setMessage(
         `a new blog ${blogObject.title} by ${blogObject.author} added`,
       );
       setMessageType("success");
-    } catch {
+      navigate("/");
+
+      setTimeout(() => {
+        setMessage(null);
+        setMessageType(null);
+      }, 5000);
+    } catch (error) {
+      console.error("ADD BLOG ERROR:", error.response?.data || error.message);
+
       setMessage("Failed to add blog");
       setMessageType("error");
+
+      setTimeout(() => {
+        setMessage(null);
+        setMessageType(null);
+      }, 5000);
     }
   };
-
   const handleRemoveBlog = async (id) => {
     try {
       const blogToRemove = blogs.find((blog) => blog.id === id);
@@ -104,9 +138,17 @@ const App = () => {
       setMessage(
         `a blog ${blogToRemove.title} by ${blogToRemove.author} was removed`,
       );
+      setTimeout(() => {
+        setMessage(null);
+        setMessageType(null);
+      }, 5000);
     } catch {
       setMessageType("error");
       setMessage("Failed to remove blog");
+      setTimeout(() => {
+        setMessage(null);
+        setMessageType(null);
+      }, 5000);
     }
   };
 
@@ -126,9 +168,11 @@ const App = () => {
         )}
       </div>
 
-      <div className={`notification ${messageType === 'success' ? 'success' : 'error'}`}>
-      {message || null}
-    </div>
+      <div
+        className={`notification ${messageType === "success" ? "success" : "error"}`}
+      >
+        {message || null}
+      </div>
 
       <Routes>
         <Route

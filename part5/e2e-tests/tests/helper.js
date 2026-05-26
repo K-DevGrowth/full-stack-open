@@ -7,14 +7,20 @@ const loginWith = async (page, username, password) => {
 };
 
 const createBlog = async (page, title, author, url) => {
-  await page.getByRole("button", { name: "create new blog" }).click();
   await page.getByLabel("title").fill(title);
   await page.getByLabel("author").fill(author);
   await page.getByLabel("url").fill(url);
-  await page.getByRole("button", { name: "create" }).click();
-  await page.getByText(`${title} ${author}`).waitFor();
-};
 
+  await Promise.all([
+    page.waitForResponse(
+      (response) =>
+        response.url().includes("/api/blogs") &&
+        response.request().method() === "POST" &&
+        response.ok(),
+    ),
+    page.getByRole("button", { name: "create" }).click(),
+  ]);
+};
 const likeBlog = async (page, title, times) => {
   const blog = page.locator(".blog").filter({ hasText: title });
 
