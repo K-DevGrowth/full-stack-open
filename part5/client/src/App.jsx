@@ -6,6 +6,15 @@ import BlogList from "./components/BlogList";
 import Login from "./components/Login";
 import Blog from "./components/Blog";
 import BlogForm from "./components/BlogForm";
+import {
+  AppBar,
+  Button,
+  Container,
+  Toolbar,
+  Typography,
+  Box,
+  Alert,
+} from "@mui/material";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -154,25 +163,38 @@ const App = () => {
 
   return (
     <div>
-      <div className="nav">
-        <Link to={"/"}>blogs</Link>
-        {user && <Link to={"/create"}>new blogs</Link>}
-        {user ? (
-          <div>
-            <button type="button" onClick={handleLogout}>
-              logout
-            </button>
-          </div>
-        ) : (
-          <Link to={"/login"}>login</Link>
-        )}
-      </div>
+      <AppBar position="static">
+        <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+          <Typography>Blog App</Typography>
+          <Box>
+            <Button color="inherit" component={Link} to={"/"}>
+              blogs
+            </Button>
+            <Button color="inherit" component={Link} to="/create">
+              new blogs
+            </Button>
 
-      <div
-        className={`notification ${messageType === "success" ? "success" : "error"}`}
-      >
-        {message || null}
-      </div>
+            {!user ? (
+              <Button color="inherit" component={Link} to="/login">
+                login
+              </Button>
+            ) : (
+              <Button color="inherit" onClick={handleLogout}>
+                logout
+              </Button>
+            )}
+          </Box>
+        </Toolbar>
+      </AppBar>
+
+      {message && (
+        <Alert
+          sx={{ margin: "10px 0" }}
+          severity={`${messageType === "success" ? "success" : "error"}`}
+        >
+          {message || null}
+        </Alert>
+      )}
 
       <Routes>
         <Route

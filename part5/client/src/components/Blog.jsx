@@ -1,3 +1,5 @@
+import { Box, Button, Card } from "@mui/material";
+
 const Blog = ({ blog, user, handleLikeChange, handleRemoveBlog }) => {
   if (!blog) {
     return null;
@@ -19,20 +21,29 @@ const Blog = ({ blog, user, handleLikeChange, handleRemoveBlog }) => {
 
   return (
     <div className="blog">
-      <h3>{blog.title}</h3>
-
-      <div>
+      <Card sx={{ margin: "10px 0", padding: "10px" }}>
+        <h3>{blog.title}</h3>
+        <p>by {blog.author}</p>
         <a href={blog.url}>{blog.url}</a>
-
-        <div>
-          <span>likes {blog.likes}</span>{" "}
-          {user && <button onClick={onLike}>like</button>}
-        </div>
-
         <p>Added by {blog.user.username}</p>
-
-        {isCreator && <button onClick={onRemove}>remove</button>}
-      </div>
+        <Box sx={{ gap: "5px", display: "flex", alignItems: "center" }}>
+          <span>{blog.likes} likes</span>
+          {user && (
+            <Button variant="outlined" onClick={onLike}>
+              like
+            </Button>
+          )}
+          {isCreator && (
+            <Button
+              sx={{ color: "red", borderColor: "red" }}
+              variant="outlined"
+              onClick={onRemove}
+            >
+              remove
+            </Button>
+          )}
+        </Box>
+      </Card>
     </div>
   );
 };
