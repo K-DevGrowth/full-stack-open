@@ -1,39 +1,44 @@
 import { create } from "zustand";
+import { getAll, createNew, update, deleted } from "./services/anecdote";
+import { setNotification } from "./notificationStore";
 
-const anecdotesAtStart = [
-  "If it hurts, do it more often",
-  "Adding manpower to a late software project makes it later!",
-  "The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.",
-  "Any fool can write code that a computer can understand. Good programmers write code that humans can understand.",
-  "Premature optimization is the root of all evil.",
-  "Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.",
-];
-
-const getId = () => (100000 * Math.random()).toFixed(0);
-
-const asObject = (anecdote) => ({
-  content: anecdote,
-  id: getId(),
-  votes: 0,
-});
-
-const useAnecdoteStore = create((set) => ({
-  anecdotes: anecdotesAtStart.map(asObject),
+const useAnecdoteStore = create((set, get) => ({
+  anecdotes: [],
   query: "",
   actions: {
-    add: (anecdote) =>
-      set((state) => ({ anecdotes: [...state.anecdotes, anecdote] })),
+    add: async (anecdote) => {
+      const newAnecdote = await createNew(anecdote);
+      set((state) => ({ anecdotes: [...state.anecdotes, newAnecdote] }));
+      setNotification(`You added '${anecdote.content}'`);
+    },
 
-    votes: (id) =>
+    votes: async (id) => {
+      const anecdote = get().anecdotes.find((a) => a.id === id);
+      const updated = await update(id, {
+        ...anecdote,
+        votes: anecdote.votes + 1,
+      });
       set((state) => ({
-        anecdotes: state.anecdotes.map((anecdote) =>
-          anecdote.id === id
-            ? { ...anecdote, votes: anecdote.votes + 1 }
-            : anecdote,
-        ),
-      })),
+        anecdotes: state.anecdotes.map((a) => (a.id === id ? updated : a)),
+      }));
+      setNotification(`You voted '${anecdote.content}'`);
+    },
 
     setQuery: (value) => set(() => ({ query: value })),
+
+    initialize: async () => {
+      const anecdotes = await getAll();
+      set(() => ({ anecdotes }));
+    },
+
+    remove: async (id) => {
+      const anecdote = get().anecdotes.find((a) => a.id === id);
+      const deletedAnecdote = await deleted(id);
+      set((state) => ({
+        anecdotes: state.anecdotes.filter((a) => a.id !== deletedAnecdote),
+      }));
+      setNotification(`You removed '${anecdote.content}'`);
+    },
   },
 }));
 
@@ -44,6 +49,5 @@ export const useAnecdotes = () => {
     anecdote.content.toLowerCase().includes(query.toLowerCase()),
   );
 };
-export const useQueryAnecdotes = () => useAnecdoteStore((state) => state.query);
 export const useAnecdoteActions = () =>
   useAnecdoteStore((state) => state.actions);

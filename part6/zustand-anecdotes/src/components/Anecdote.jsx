@@ -1,11 +1,14 @@
 import { useAnecdoteActions } from "../store";
 
 const Anecdote = ({ anecdote }) => {
-  const { votes } = useAnecdoteActions();
+  const { votes, remove } = useAnecdoteActions();
 
   const vote = (id) => {
     votes(id);
-    console.log("vote", id);
+  };
+
+  const handleRemove = (id) => {
+    remove(id);
   };
 
   return (
@@ -14,6 +17,11 @@ const Anecdote = ({ anecdote }) => {
       <div>
         has {anecdote.votes}
         <button onClick={() => vote(anecdote.id)}>vote</button>
+        {anecdote.votes === 0 ? (
+          <button onClick={() => handleRemove(anecdote.id)}>delete</button>
+        ) : (
+          ""
+        )}
       </div>
     </div>
   );
