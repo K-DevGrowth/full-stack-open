@@ -1,0 +1,19 @@
+{
+  "anecdotes": [
+    {
+      "content": "hello",
+      "author": "kdev",
+      "info": "92042",
+      "votes": 0,
+      "id": "RYCPI4SDbQw"
+    },
+    {
+      "content": "w",
+      "author": "w",
+      "info": "w",
+      "votes": 0,
+      "id": "o5XtB1VWIPM"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
