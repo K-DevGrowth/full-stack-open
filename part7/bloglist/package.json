@@ -1,0 +1,15 @@
+{
+  "name": "bloglist",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+    "build": "npm start --prefix client",
+    "start": "NODE_ENV=production npm start --prefix server"
+  }
+}
