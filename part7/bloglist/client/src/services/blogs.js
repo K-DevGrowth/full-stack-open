@@ -3,7 +3,7 @@ const baseUrl = "/api/blogs";
 
 let token;
 
-const setToken = (newToken) => {
+export const setToken = (newToken) => {
   token = newToken ? `Bearer ${newToken}` : null;
 };
 
@@ -13,24 +13,27 @@ const getConfig = () => {
   };
 };
 
-const getAll = () => {
-  const request = axios.get(baseUrl);
-  return request.then((response) => response.data);
+export const getAll = async () => {
+  const res = await fetch(baseUrl);
+
+  if (!res.ok) {
+    throw new Error("Failed to load blogs");
+  }
+
+  return res.json();
 };
 
-const create = async (newObject) => {
+export const create = async (newObject) => {
   const response = await axios.post(baseUrl, newObject, getConfig());
   return response.data;
 };
 
-const remove = async (id) => {
+export const remove = async (id) => {
   await axios.delete(`${baseUrl}/${id}`, getConfig());
   return id;
 };
 
-const update = async (id, newObject) => {
+export const update = async (id, newObject) => {
   const response = await axios.put(`${baseUrl}/${id}`, newObject, getConfig());
   return response.data;
 };
-
-export default { getAll, create, setToken, update, remove };

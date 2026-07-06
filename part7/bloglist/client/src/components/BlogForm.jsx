@@ -1,21 +1,31 @@
 import { useState } from "react";
+import useBlogs from "../hooks/useBlogs";
+import { useNavigate } from "react-router-dom";
 
-const BlogForm = ({ handleAddBlog }) => {
+const BlogForm = () => {
+  const { createBlogMutation, disableButton } = useBlogs();
+
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
 
-  const onCreate = (e) => {
-    e.preventDefault();
-    handleAddBlog({
-      title: title,
-      author: author,
-      url: url,
-    });
+  const navigate = useNavigate();
 
-    setTitle("");
-    setAuthor("");
-    setUrl("");
+  const onCreate = async (e) => {
+    e.preventDefault();
+    try {
+      await createBlogMutation({
+        title: title,
+        author: author,
+        url: url,
+      });
+
+      setTitle("");
+      setAuthor("");
+      setUrl("");
+
+      navigate("/");
+    } catch (error) {}
   };
 
   return (
@@ -48,7 +58,9 @@ const BlogForm = ({ handleAddBlog }) => {
           onChange={(e) => setUrl(e.target.value)}
         />
       </div>
-      <button type="submit">create</button>
+      <button type="submit" disabled={disableButton}>
+        create
+      </button>
     </form>
   );
 };

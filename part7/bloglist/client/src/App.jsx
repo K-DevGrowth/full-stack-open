@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Link, Route, Routes, useMatch, useNavigate } from "react-router-dom";
-import blogService from "./services/blogs";
 import loginService from "./services/login";
 import BlogList from "./components/BlogList";
 import Login from "./components/Login";
@@ -18,6 +17,8 @@ import {
 import { ErrorBoundary } from "react-error-boundary";
 import NotFound from "./components/NotFound";
 import { useNotify } from "./hooks/useNotify";
+import useBlogs from "./hooks/useBlogs";
+import { setToken } from "./services/blogs";
 
 const App = () => {
   const {
@@ -27,36 +28,26 @@ const App = () => {
     handleAddNotify,
     handleRemoveNotify,
   } = useNotify();
-  const [blogs, setBlogs] = useState([]);
+
+  const { blogs, createBlogMutation } = useBlogs();
   const [user, setUser] = useState(null);
 
   const navigate = useNavigate();
-
-  const match = useMatch("/blogs/:id");
-  const blog = match ? blogs.find((b) => b.id === match.params.id) : null;
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
       setUser(user);
-      blogService.setToken(user.token);
+      setToken(user.token);
     }
-  }, []);
-
-  useEffect(() => {
-    blogService
-      .getAll()
-      .then((blogs) =>
-        setBlogs(blogs.sort((blog1, blog2) => blog2.likes - blog1.likes)),
-      );
   }, []);
 
   const handleLogin = async ({ username, password }) => {
     try {
       const user = await loginService.login({ username, password });
       window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
-      blogService.setToken(user.token);
+      setToken(user.token);
       setUser(user);
       navigate("/");
       // setMessageType("success");
@@ -78,7 +69,7 @@ const App = () => {
   const handleLogout = () => {
     window.localStorage.removeItem("loggedBlogappUser");
     setUser(null);
-    blogService.setToken(null);
+    setToken(null);
     navigate("/login");
   };
 
@@ -94,47 +85,6 @@ const App = () => {
     } catch {
       // setMessageType("error");
       // setMessage("Failed to update the like amount of the blog");
-      // setTimeout(() => {
-      //   setMessage(null);
-      //   setMessageType(null);
-      // }, 5000);
-    }
-  };
-
-  const handleAddBlog = async (blogObject) => {
-    try {
-      const newBlog = await blogService.create(blogObject);
-
-      const blogWithUser = {
-        ...newBlog,
-        user: newBlog.user || user,
-      };
-
-      setBlogs(
-        [...blogs, blogWithUser].sort(
-          (blog1, blog2) => blog2.likes - blog1.likes,
-        ),
-      );
-
-      navigate("/");
-    } catch (error) {
-      // setMessage("Failed to add blog");
-      // setMessageType("error");
-      // setTimeout(() => {
-      //   setMessage(null);
-      //   setMessageType(null);
-      // }, 5000);
-    }
-  };
-  const handleRemoveBlog = async (id) => {
-    try {
-      const blogToRemove = blogs.find((blog) => blog.id === id);
-      await blogService.remove(id);
-      setBlogs(blogs.filter((blog) => blog.id !== id));
-      navigate("/");
-    } catch {
-      // setMessageType("error");
-      // setMessage("Failed to remove blog");
       // setTimeout(() => {
       //   setMessage(null);
       //   setMessageType(null);
@@ -182,7 +132,7 @@ const App = () => {
           path="/create"
           element={
             <ErrorBoundary>
-              <BlogForm handleAddBlog={handleAddBlog} />
+              <BlogForm />
             </ErrorBoundary>
           }
         />
@@ -190,12 +140,7 @@ const App = () => {
           path="/blogs/:id"
           element={
             <ErrorBoundary>
-              <Blog
-                blog={blog}
-                user={user}
-                handleLikeChange={handleLikeChange}
-                handleRemoveBlog={handleRemoveBlog}
-              />
+              <Blog user={user} />
             </ErrorBoundary>
           }
         />
@@ -210,7 +155,7 @@ const App = () => {
                 </div>
               }
             >
-              <BlogList blogs={blogs} />
+              <BlogList />
             </ErrorBoundary>
           }
         />

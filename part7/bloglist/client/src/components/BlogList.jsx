@@ -1,11 +1,16 @@
 import { useState, useEffect, useRef } from "react";
 import Blog from "./Blog";
-import blogService from "../services/blogs";
-import loginService from "../services/login";
 import BlogForm from "./BlogForm";
 import { Link } from "react-router-dom";
+import useBlogs from "../hooks/useBlogs";
 
-const BlogList = ({ blogs }) => {
+const BlogList = () => {
+  const { blogs, isPending, isError } = useBlogs();
+
+  if (isPending) return "loading...";
+
+  if (isError) return "error";
+
   return (
     <div>
       <h2>blogs</h2>

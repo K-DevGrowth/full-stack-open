@@ -6,10 +6,8 @@ export const NotificationProvider = ({ children }) => {
   const [message, setMessage] = useState(null);
   const [messageType, setMessageType] = useState(null);
 
-  const handleLikeNotify = (blogObject) => {
-    setMessage(
-      `a new blog ${blogObject.title} by ${blogObject.author} was liked`,
-    );
+  const notifyLikeBlog = (blog) => {
+    setMessage(`a new blog ${blog.title} by ${blog.author} was liked`);
     setMessageType("success");
     setTimeout(() => {
       setMessage(null);
@@ -17,9 +15,15 @@ export const NotificationProvider = ({ children }) => {
     }, 5000);
   };
 
-  const handleAddNotify = (blogObject) => {
-    setMessage(`a new blog ${blogObject.title} by ${blogObject.author} added`);
-    setMessageType("success");
+  const notifyAddBlog = ({ success, blog }) => {
+    setMessage(
+      success
+        ? `a new blog ${blog.title} by ${blog.author} added`
+        : "Failed to add blog",
+    );
+
+    setMessageType(success ? "success" : "error");
+
     setTimeout(() => {
       setMessage(null);
       setMessageType(null);
@@ -42,9 +46,7 @@ export const NotificationProvider = ({ children }) => {
       value={{
         message,
         messageType,
-        handleLikeNotify,
-        handleAddNotify,
-        handleRemoveNotify,
+        notifyAddBlog,
       }}
     >
       {children}

@@ -1,6 +1,15 @@
 import { Box, Button, Card } from "@mui/material";
+import useBlogs from "../hooks/useBlogs";
+import { useMatch, useNavigate } from "react-router-dom";
 
-const Blog = ({ blog, user, handleLikeChange, handleRemoveBlog }) => {
+const Blog = ({ user, handleLikeChange }) => {
+  const { blogs, removeBlogMutation } = useBlogs();
+
+  const navigate = useNavigate();
+
+  const match = useMatch("/blogs/:id");
+  const blog = match ? blogs.find((b) => b.id === match.params.id) : null;
+
   if (!blog) {
     return null;
   }
@@ -13,10 +22,13 @@ const Blog = ({ blog, user, handleLikeChange, handleRemoveBlog }) => {
     });
   };
 
-  const onRemove = () => {
+  const onRemove = async () => {
     if (!window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) return;
 
-    handleRemoveBlog(blog.id);
+    try {
+      await removeBlogMutation(blog.id);
+      navigate("/");
+    } catch (error) {}
   };
 
   return (
