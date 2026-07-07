@@ -55,7 +55,7 @@ export const NotificationProvider = ({ children }) => {
       setMessage(null);
       setMessageType(null);
     }, 5000);
-  }, []);
+  }, [message]);
 
   return (
     <NotificationContext.Provider

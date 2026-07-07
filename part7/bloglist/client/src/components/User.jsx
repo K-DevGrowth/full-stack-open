@@ -2,11 +2,16 @@ import { useMatch, useNavigate } from "react-router-dom";
 import useUsers from "../hooks/useUsers";
 
 const User = () => {
-  const { users } = useUsers();
+  const { users, isPending, isError } = useUsers();
 
   const navigate = useNavigate();
 
   const math = useMatch("/users/:id");
+
+  if (isPending) return "loading...";
+
+  if (isError) return "error";
+
   const user = math ? users.find((user) => user.id === math.params.id) : null;
 
   return (

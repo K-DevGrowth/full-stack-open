@@ -37,3 +37,13 @@ export const update = async (id, newObject) => {
   const response = await axios.put(`${baseUrl}/${id}`, newObject, getConfig());
   return response.data;
 };
+
+export const postComment = async (id, comments) => {
+  const res = await fetch(`${baseUrl}/${id}/comments`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ comments: comments }),
+  });
+
+  return res.json();
+};

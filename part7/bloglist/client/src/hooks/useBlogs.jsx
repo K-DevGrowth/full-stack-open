@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { create, getAll, remove, update } from "../services/blogs";
+import { create, getAll, postComment, remove, update } from "../services/blogs";
 import { useNotify } from "./useNotify";
 
 const useBlogs = () => {
@@ -48,6 +48,13 @@ const useBlogs = () => {
     },
   });
 
+  const postCommentToBlogMutation = useMutation({
+    mutationFn: ({ id, comment }) => postComment(id, comment),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["blogs"] });
+    },
+  });
+
   return {
     blogs: result.data,
     isPending: result.isPending,
@@ -55,7 +62,8 @@ const useBlogs = () => {
     createBlog: (newObject) => createBlogMutation.mutateAsync(newObject),
     removeBlog: (id) => removeBlogMutation.mutateAsync(id),
     likeBlog: (payload) => likeBlogMutation.mutateAsync(payload),
-
+    postCommentToBlog: (payload) =>
+      postCommentToBlogMutation.mutateAsync(payload),
     disableButton: createBlogMutation.isPending,
   };
 };

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import useBlogs from "../hooks/useBlogs";
 import { useNavigate } from "react-router-dom";
+import { Button, TextField } from "@mui/material";
 
 const BlogForm = () => {
   const { createBlog, disableButton } = useBlogs();
@@ -31,36 +32,40 @@ const BlogForm = () => {
   return (
     <form onSubmit={onCreate}>
       <h2>Create new</h2>
-      <div>
-        <label htmlFor="title">title</label>
-        <input
-          type="text"
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          maxWidth: "300px",
+          gap: "10px",
+          paddingBottom: "10px",
+        }}
+      >
+        <TextField
+          placeholder="title"
+          size="small"
           id="title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
-      </div>
-      <div>
-        <label htmlFor="author">author</label>
-        <input
-          type="text"
+        <TextField
+          placeholder="author"
+          size="small"
           id="author"
           value={author}
           onChange={(e) => setAuthor(e.target.value)}
         />
-      </div>
-      <div>
-        <label htmlFor="url">url</label>
-        <input
-          type="text"
+        <TextField
+          placeholder="url"
+          size="small"
           id="url"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
         />
       </div>
-      <button type="submit" disabled={disableButton}>
+      <Button type="submit" disabled={disableButton} variant="contained">
         create
-      </button>
+      </Button>
     </form>
   );
 };

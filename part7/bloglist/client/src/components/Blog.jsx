@@ -1,18 +1,23 @@
 import { Box, Button, Card, TextField } from "@mui/material";
 import useBlogs from "../hooks/useBlogs";
 import { useMatch, useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 const Blog = ({ user }) => {
-  const { blogs, removeBlog, likeBlog } = useBlogs();
+  const [comment, setComment] = useState("");
+
+  const { blogs, isPending, isError, removeBlog, likeBlog, postCommentToBlog } =
+    useBlogs();
 
   const navigate = useNavigate();
 
   const match = useMatch("/blogs/:id");
-  const blog = match ? blogs.find((b) => b.id === match.params.id) : null;
 
-  if (!blog) {
-    return null;
-  }
+  if (isPending) return "loading...";
+
+  if (isError) return "error";
+
+  const blog = match ? blogs.find((b) => b.id === match.params.id) : null;
 
   const isCreator = user && blog.user.username === user.username;
 
@@ -33,6 +38,13 @@ const Blog = ({ user }) => {
     try {
       await removeBlog(blog.id);
       navigate("/");
+    } catch (error) {}
+  };
+
+  const onComment = async () => {
+    try {
+      await postCommentToBlog({ id: blog.id, comment: comment });
+      setComment("");
     } catch (error) {}
   };
 
@@ -65,15 +77,18 @@ const Blog = ({ user }) => {
           id="outlined-basic"
           size="small"
           placeholder="add a comment"
-          sx={{ paddingRight: "10px" }}
           required
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+          sx={{ paddingRight: "10px" }}
         />
-        <Button type="button" variant="contained">
+        <Button type="button" variant="contained" onClick={onComment}>
           ADD COMMENT
         </Button>
-
         <ul>
-          
+          {blog.comments.map((comment) => (
+            <li key={comment}>{comment}</li>
+          ))}
         </ul>
       </Card>
     </div>
