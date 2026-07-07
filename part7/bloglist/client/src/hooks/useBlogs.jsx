@@ -1,11 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { create, getAll, remove } from "../services/blogs";
+import { create, getAll, remove, update } from "../services/blogs";
 import { useNotify } from "./useNotify";
 
 const useBlogs = () => {
   const queryClient = useQueryClient();
 
-  const { notifyAddBlog } = useNotify();
+  const { notifyAddBlog, notifyRemoveBlog, notifyLikeBlog } = useNotify();
 
   const result = useQuery({
     queryKey: ["blogs"],
@@ -25,8 +25,26 @@ const useBlogs = () => {
 
   const removeBlogMutation = useMutation({
     mutationFn: remove,
-    onSuccess: () => {
+    onSuccess: (id) => {
       queryClient.invalidateQueries({ queryKey: ["blogs"] });
+      notifyRemoveBlog({
+        success: true,
+        blog: result.data.find((blog) => blog.id === id),
+      });
+    },
+    onError: () => {
+      notifyRemoveBlog({ success: false });
+    },
+  });
+
+  const likeBlogMutation = useMutation({
+    mutationFn: ({ id, blogObject }) => update(id, blogObject),
+    onSuccess: (blogObject) => {
+      queryClient.invalidateQueries({ queryKey: ["blogs"] });
+      notifyLikeBlog({ success: true, blog: blogObject });
+    },
+    onError: () => {
+      notifyLikeBlog({ success: false });
     },
   });
 
@@ -34,9 +52,9 @@ const useBlogs = () => {
     blogs: result.data,
     isPending: result.isPending,
     isError: result.isError,
-    createBlogMutation: (newObject) =>
-      createBlogMutation.mutateAsync(newObject),
-    removeBlogMutation: (id) => removeBlogMutation.mutateAsync(id),
+    createBlog: (newObject) => createBlogMutation.mutateAsync(newObject),
+    removeBlog: (id) => removeBlogMutation.mutateAsync(id),
+    likeBlog: (payload) => likeBlogMutation.mutateAsync(payload),
 
     disableButton: createBlogMutation.isPending,
   };

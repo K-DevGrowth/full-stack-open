@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { Button, TextField } from "@mui/material";
+import { useLoggedUser } from "../hooks/useLoggedUser";
 
-const Login = ({ user, handleLogin }) => {
+const Login = () => {
+  const { user, handleLogin } = useLoggedUser();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 

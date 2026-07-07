@@ -3,7 +3,7 @@ import useBlogs from "../hooks/useBlogs";
 import { useNavigate } from "react-router-dom";
 
 const BlogForm = () => {
-  const { createBlogMutation, disableButton } = useBlogs();
+  const { createBlog, disableButton } = useBlogs();
 
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
@@ -14,7 +14,7 @@ const BlogForm = () => {
   const onCreate = async (e) => {
     e.preventDefault();
     try {
-      await createBlogMutation({
+      await createBlog({
         title: title,
         author: author,
         url: url,

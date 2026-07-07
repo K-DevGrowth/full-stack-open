@@ -2,8 +2,8 @@ import { Box, Button, Card } from "@mui/material";
 import useBlogs from "../hooks/useBlogs";
 import { useMatch, useNavigate } from "react-router-dom";
 
-const Blog = ({ user, handleLikeChange }) => {
-  const { blogs, removeBlogMutation } = useBlogs();
+const Blog = ({ user }) => {
+  const { blogs, removeBlog, likeBlog } = useBlogs();
 
   const navigate = useNavigate();
 
@@ -16,17 +16,22 @@ const Blog = ({ user, handleLikeChange }) => {
 
   const isCreator = user && blog.user.username === user.username;
 
-  const onLike = () => {
-    handleLikeChange(blog.id, {
-      likes: blog.likes + 1,
-    });
+  const onLike = async () => {
+    try {
+      await likeBlog({
+        id: blog.id,
+        blogObject: {
+          likes: blog.likes + 1,
+        },
+      });
+    } catch (error) {}
   };
 
   const onRemove = async () => {
     if (!window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) return;
 
     try {
-      await removeBlogMutation(blog.id);
+      await removeBlog(blog.id);
       navigate("/");
     } catch (error) {}
   };
