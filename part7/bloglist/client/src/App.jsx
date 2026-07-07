@@ -18,7 +18,8 @@ import NotFound from "./components/NotFound";
 import { useNotify } from "./hooks/useNotify";
 import { setToken } from "./services/blogs";
 import { useLoggedUser } from "./hooks/useLoggedUser";
-import Users from "./components/Users";
+import UserList from "./components/UserList";
+import User from "./components/User";
 
 const App = () => {
   const { message, messageType } = useNotify();
@@ -33,10 +34,10 @@ const App = () => {
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
           <Typography>Blog App</Typography>
           <Box>
-            <Button color="inherit" component={Link} to={"/"}>
+            <Button color="inherit" component={Link} to="/">
               blogs
             </Button>
-            <Button color="inherit" component={Link} to={"/users"}>
+            <Button color="inherit" component={Link} to="/users">
               users
             </Button>
             <Button color="inherit" component={Link} to="/create">
@@ -122,7 +123,22 @@ const App = () => {
                 </div>
               }
             >
-              <Users />
+              <UserList />
+            </ErrorBoundary>
+          }
+        />
+        <Route
+          path="/users/:id"
+          element={
+            <ErrorBoundary
+              fallback={
+                <div>
+                  <h1>Something went wrong :(</h1>
+                  <p>Please make a bug report to mluukkai in Discord</p>
+                </div>
+              }
+            >
+              <User />
             </ErrorBoundary>
           }
         />

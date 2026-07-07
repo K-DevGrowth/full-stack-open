@@ -7,16 +7,18 @@ import {
   TableRow,
 } from "@mui/material";
 import { useLoggedUser } from "../hooks/useLoggedUser";
-import { useEffect, useState } from "react";
 import { getAllUsers } from "../services/users";
-import { Link } from "react-router-dom";
+import { Link, useMatch } from "react-router-dom";
+import useUsers from "../hooks/useUsers";
 
-const Users = () => {
-  const [users, setUsers] = useState([]);
+const UserList = () => {
+  const { users, isPending, isError } = useUsers();
 
-  useEffect(() => {
-    getAllUsers().then((data) => setUsers(data));
-  }, []);
+  const math = useMatch("/api/users");
+
+  if (isPending) return "loading...";
+
+  if (isError) return "error";
 
   return (
     <div>
@@ -35,7 +37,7 @@ const Users = () => {
             {users.map((user) => (
               <TableRow key={user.username}>
                 <TableCell>
-                  <Link component={Link} to="/users/:id">
+                  <Link component={Link} to={`/users/${user.id}`}>
                     {user.username}
                   </Link>
                 </TableCell>
@@ -50,4 +52,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default UserList;

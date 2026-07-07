@@ -1,4 +1,4 @@
-import { Box, Button, Card } from "@mui/material";
+import { Box, Button, Card, TextField } from "@mui/material";
 import useBlogs from "../hooks/useBlogs";
 import { useMatch, useNavigate } from "react-router-dom";
 
@@ -60,6 +60,21 @@ const Blog = ({ user }) => {
             </Button>
           )}
         </Box>
+        <h4>comments</h4>
+        <TextField
+          id="outlined-basic"
+          size="small"
+          placeholder="add a comment"
+          sx={{ paddingRight: "10px" }}
+          required
+        />
+        <Button type="button" variant="contained">
+          ADD COMMENT
+        </Button>
+
+        <ul>
+          
+        </ul>
       </Card>
     </div>
   );
